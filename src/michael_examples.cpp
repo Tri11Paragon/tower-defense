@@ -143,13 +143,13 @@ void michael_examples()
 
 		// so test1, test2, and vector_of_rules will be destroyed here.
 
-		// (hint) order of deletion
+		// (hint) order of destruction
 		// I (0) am deleted -> (1) that was moved when the vector expanded
 		// I (1) am deleted -> (1) that is in the vector
 		// I (2) am deleted -> (2) that is in the vector
 		// I (0) am deleted -> test2 object
 		// I (1) am deleted -> test1 object
-		// you'll notice that deletion is in reverse order of declaration
+		// you'll notice that destruction is in reverse order of declaration
 	}
 
 	/*

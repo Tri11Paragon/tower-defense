@@ -329,6 +329,101 @@ void michael_examples()
 	for (const auto& [i,v] : blt::enumerate(some_data))
 		blt::black_box(v);
 
+	// This is of course equivalent to;
+	for (size_t i = 0; i < some_data.size(); ++i)
+	{
+		auto& v = some_data[i];
+		blt::black_box(i);
+		blt::black_box(v);
+	}
+	// it's a nice shortcut and can be very useful when say iterating over a hashmap, which as no sense of order,
+	// that is you cannot access it by indexing a position in an array, you must access it with a key
+	for (const auto [i, kv] : blt::enumerate(some_map))
+		BLT_TRACE("Index {} has value {} -> {}", i, kv.first, kv.second);
+	// If you have a good IDE with a good linter, you'll notice that kv is in fact a pair of elements from the map.
+	// that is really annoying, as there is no nested structured bindings, you need to manually access it.
+	// There has to be a better way right??
+
+	BLT_TRACE("");
+	BLT_TRACE("");
+
+	// introducing flatten()!
+	// it does exactly what you expect it to. it flattens tuple like elements into a single output tuple for use
+	// primarily in structured bindings, but even without them (you cannot use them with lambda captures)
+	// it is very useful to be able to access all elements without needing to nest your accesses.
+	// this is the exact use case that I made it for
+	for (const auto [i, k, v] : blt::enumerate(some_map).flatten())
+		BLT_TRACE("Index {} has value {} -> {}", i, k, v);
+
+	// flatten() should only do a single layer of tuple flattening. If you want it to recursively apply to all levels
+	// in the case of nested tuples inside tuples.... etc
+	// you can use flatten_all()
+	// not going to make an example, but is important to note
+	// also; this stuff should be invisible to the compiler, meaning it has no performance costs
+
+	BLT_TRACE("");
+	BLT_TRACE("");
+
+	// you can use the filter option to filter elements from the container.
+	// it is an ugly hack because of the way c++ iterators work
+	// so it forcefully returns an optional
+	for (const auto v : blt::enumerate(some_map).flatten().filter([](const auto& data) {
+		auto [i, k, v] = data;
+		if (i % 2 == 0)
+			return false;
+		if (k == "world")
+			return false;
+		if (v == 789.f)
+			return false;
+		return true;
+	}))
+	{
+		if (v)
+			BLT_TRACE("{} {} {}", std::get<0>(*v), std::get<1>(*v), std::get<2>(*v));
+	}
+
+	BLT_TRACE("");
+	BLT_TRACE("");
+
+	// you can use map as a method of modifying or even changing the type of data.
+	for (const auto [k, v] : blt::iterate(some_map).map([](auto& data) {
+		return std::pair{data.first + "!", data.second + 1.f};
+	}))
+	{
+		BLT_TRACE("Key {} has value {}", k, v);
+	}
+
+	BLT_TRACE("");
+	BLT_TRACE("");
+
+	// finally you can use zip to iterate through containers in pairs
+	// zip works with any number of containers as input, and will use the smallest container for iteration
+	// you should not use this with containers that are not of the same size
+	for (const auto [a, b, c] : blt::zip(some_data, other_data, some_map))
+		BLT_TRACE("{}, {}, {} -> {}", a, b, c.first, c.second);
+
+	BLT_TRACE("");
+	BLT_TRACE("");
+
+	// oh this is another great usage of flatten()!
+	for (const auto [a, b, c, d] : blt::zip(some_data, other_data, some_map).flatten())
+		BLT_TRACE("{}, {}, {} -> {}", a, b, c, d);
+
+	// alternative equivalent:
+	auto it1 = some_data.begin();
+	auto it2 = other_data.begin();
+	auto it3 = some_map.begin(); // required to use iterators since you cannot index access a map with a number
+	for (; it1 != some_data.end() && it2 != other_data.end() && it3 != some_map.end(); ++it1, ++it2, ++it3)
+	{
+		auto& a = *it1;
+		auto& b = *it2;
+		auto& c = it3->first;
+		auto& d = it3->second;
+		BLT_TRACE("{}, {}, {} -> {}", a, b, c, d);
+	}
+
+	// see how blt::iterator can lead to much cleaner design?
+
 	// show off reference stuff
 	refs();
 }

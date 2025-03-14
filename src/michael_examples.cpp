@@ -36,6 +36,14 @@
 
 #include <blt/std/assert.h>
 
+/*
+ * Naming Conventions
+ */
+// most classes, functions, variable names, etc should use lower_snake_case
+// enum / enum class should use lower_snake_case for the type name, then UPPER_SNAKE_CASE for elements
+// class member (private) variables should be prefixed with m_
+// prefer enum class defs over enum defs, they are namespaced.
+
 void michael_examples()
 {
 	/*
@@ -79,7 +87,7 @@ void michael_examples()
 		// the initializer is run before any other code, thus doing it inline guarantees the class is in a valid state.
 		explicit rule_of_5_t(const blt::i32 id): m_id(id)
 		{
-			BLT_ASSERT(m_id > 0 && "id must be greater than 0 (zero is used to represent empty state)");
+			// BLT_ASSERT(m_id > 0 && "id must be greater than 0 (zero is used to represent empty state)");
 			BLT_TRACE("I ({}) was constructed", m_id);
 		}
 
@@ -131,7 +139,11 @@ void michael_examples()
 		blt::i32 m_id = 0;
 	};
 
+	BLT_TRACE("--{}--", "{Rule of 5}");
+
 	// look at the output from this, you will understand what is going on.
+	// we should talk about R and L value references right?
+	// soon! (keep this concept in mind, basically R value references are temporary objects, L values point to real objects)
 	{
 		// scoped block means lifetimes of objects only exist for the lifetime of the block
 		rule_of_5_t test1(1); // constructed
@@ -152,6 +164,9 @@ void michael_examples()
 		// you'll notice that destruction is in reverse order of declaration
 	}
 
+	BLT_TRACE("");
+	BLT_TRACE("--{}--", "{Rule of 0}");
+
 	/*
 	 * You know from 2P95 that we can use new/delete to allocate memory.
 	 * Don't do that. Fun fact: you basically never need to use new/delete anymore
@@ -161,4 +176,65 @@ void michael_examples()
 	 * What this means is, using standard headers, you never need to worry about manual memory management.
 	 * This is called the rule of 0. You don't need to define copy/move/destructors when the underlying types handle it for you.
 	 */
+
+	struct rule_of_0_t
+	{
+		// this is a vector of rule_of_5_t, use it to show that copy and move are already made for us
+		std::vector<rule_of_5_t> m_rules;
+	};
+
+	{
+		rule_of_0_t test3;
+		// emplace_back is used to construct an object in place, you pass this function arguments. If you want to pass an already existing object,
+		// you can use .push_back(object) instead.
+		test3.m_rules.emplace_back(1);
+		test3.m_rules.emplace_back(2);
+		test3.m_rules.emplace_back(3);
+
+		// this will make a copy
+		rule_of_0_t copy_of_3 = test3;
+		// this will make a move
+		const rule_of_0_t move_of_3 = std::move(test3);
+		// all of which is implicitly defined, because std::vector has respective move and copy constructors defined.
+
+		// this function acts as a black box to the compiler. Can prevent optimizations in cases like this.
+		blt::black_box(move_of_3);
+	}
+
+	BLT_TRACE("");
+	BLT_TRACE("--{}--", "{std::vector reserve()}");
+
+	// now remember the problem of vectors allocating, then moving objects around internally as a result?
+	// well you can manually allocate a number of elements in a vector.
+	{
+		std::vector<rule_of_5_t> vector_of_rules;
+		vector_of_rules.reserve(100); // vector is empty, but can store 100 elements before reallocating
+
+		BLT_ASSERT(vector_of_rules.empty());
+		BLT_ASSERT(vector_of_rules.capacity() == 100);
+
+		for (int i = 0; i < 10; ++i)
+			vector_of_rules.emplace_back(i + 1);
+		// you'll notice in the console there's no sign of reallocation - objects are only constructed - in place
+	}
+
+	// Ok. Cool. If you know the number of elements you can reserve and not have to reallocate. But you said std::vector can replace basically
+	// any dynamic array. How about when I know the number of elements, do I always have to use .emplace_back()/.push_back()????
+	// the answer is of course not!
+	BLT_TRACE("");
+	BLT_TRACE("--{}--", "{std::vector resize()}");
+	{
+		// you can directly ask a size in the constructor (as long as you are not using an integer type as T)
+		// (I don't tend to use this and prefer calling the function directly)
+		// If the type is not default constructible you must provide the type to fill the requested elements with.
+		// in which case the type must be copy constructible
+		std::vector<rule_of_5_t> vector_of_rules{10, rule_of_5_t{0}};
+		// or manually call resize
+		vector_of_rules.resize(100, rule_of_5_t{0}); // vector has 100 elements of rule_of_5_t{0}
+
+		// welcome to our first use of a BLT iterator
+		// this is called a structured binding. You can use it to unpack structs. enumerate returns a tuple of <size_t, T>
+		for (const auto [i, v] : blt::enumerate(vector_of_rules))
+			v = rule_of_5_t{static_cast<int>(i)};
+	}
 }

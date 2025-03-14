@@ -16,14 +16,35 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef ENEMIES_H
-#define ENEMIES_H
+#ifndef FWDDECL_H
+#define FWDDECL_H
 
-#include <fwddecl.h>
+#include <utility>
+#include <blt/std/types.h>
 
 namespace td
 {
+	enum class damage_type_t : blt::u8
+	{
+		BASE      = 0,
+		WAG_TAIL  = 1,
+		KISSES    = 2,
+		HUGS	  = 4,
+		CUDDLES   = 8,
+		LUST	  = 16,
+		LOVE      = 32 // if on enemy it means only love can damage, otherwise on towers love can damage all types
+	};
 
+	template<typename... Args>
+	blt::u8 bitwise_or(Args&&... args)
+	{
+		return (static_cast<blt::u8>(std::forward<Args>(args)) | ...);
+	}
+
+	inline bool has_type(const blt::u8 val, damage_type_t type)
+	{
+		return (val & static_cast<blt::u8>(type)) != 0;
+	}
 }
 
-#endif //ENEMIES_H
+#endif //FWDDECL_H

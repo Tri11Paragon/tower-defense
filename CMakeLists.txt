@@ -51,7 +51,7 @@ macro(blt_add_project name source type)
     project(tower-defense)
 endmacro()
 
-project(tower-defense VERSION 0.0.6)
+project(tower-defense VERSION 0.0.7)
 
 option(ENABLE_ADDRSAN "Enable the address sanitizer" OFF)
 option(ENABLE_UBSAN "Enable the ub sanitizer" OFF)

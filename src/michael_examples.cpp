@@ -44,6 +44,8 @@
 // class member (private) variables should be prefixed with m_
 // prefer enum class defs over enum defs, they are namespaced.
 
+void refs();
+
 void michael_examples()
 {
 	/*
@@ -236,5 +238,34 @@ void michael_examples()
 		// this is called a structured binding. You can use it to unpack structs. enumerate returns a tuple of <size_t, T>
 		for (const auto [i, v] : blt::enumerate(vector_of_rules))
 			v = rule_of_5_t{static_cast<int>(i)};
+
+		// Oh, right the fun of C++'s casting.
+		// In C and Java you have the C-style cast (Type) variable.
+		// This is not good practice in C++
+		// In C++ we have: (C-style casts will do one of these in some order based on what the compiler thinks is best. Not a good idea)
+		// this one is the one you basically always want:
+		// static_cast<type>(expression) -> converts the expression to the type. works for static type conversions, eg: int to float
+		// dynamic_cast<ptr_or_ref_type>(expression) -> is used for OOP stuff. Is used to convert base class to derived class (I avoid OOP)
+		// -- Danger Land -
+		// reinterpret_cast<ptr_type>(&expression) -> tells the compiler we would like to interpret the pointer as this type.
+		//		This type of cast can be very dangerous, it is undefined behaviour in a lot of cases if you are not careful.
+		//		I do not remember all the silly rules with it. Basically: it works how you think it does until it doesn't
+		// const_cast<type>(expression) -> can be used to add or remove const from an expression
+		//		this can also create terrible UB. (imagine you make something const, then cast away that const and modify the underlying variable.
+		//		That is major UB and will cause major problems at some point.
 	}
+
+	BLT_TRACE("");
+	BLT_TRACE("");
+
+	// Ok I think that covers the basics of copy and move semantics, lets quickly touch on blt::iterators
+
+
+	// show off reference stuff
+	refs();
+}
+
+void refs()
+{
+
 }

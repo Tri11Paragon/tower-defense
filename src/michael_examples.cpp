@@ -153,7 +153,8 @@ void michael_examples()
 
 		std::vector<rule_of_5_t> vector_of_rules; // vector is empty
 		vector_of_rules.emplace_back(test1); // vector expands internally to size 1, object is copy constructed
-		vector_of_rules.emplace_back(std::move(test2)); // vector needs to expand, this is moved, then (1) is also moved (that sounds suboptimal right?)
+		vector_of_rules.
+		emplace_back(std::move(test2)); // vector needs to expand, this is moved, then (1) is also moved (that sounds suboptimal right?)
 
 		// so test1, test2, and vector_of_rules will be destroyed here.
 
@@ -239,6 +240,17 @@ void michael_examples()
 		for (const auto [i, v] : blt::enumerate(vector_of_rules))
 			v = rule_of_5_t{static_cast<int>(i)};
 
+		// What this effectively means is:
+		for (const auto& enumerate_element : blt::enumerate(vector_of_rules))
+		{
+			auto& i = enumerate_element.first;
+			auto& v = enumerate_element.second;
+
+			blt::black_box(i);
+			blt::black_box(v);
+			blt::black_box(enumerate_element);
+		}
+
 		// Oh, right the fun of C++'s casting.
 		// In C and Java you have the C-style cast (Type) variable.
 		// This is not good practice in C++
@@ -259,13 +271,67 @@ void michael_examples()
 	BLT_TRACE("");
 
 	// Ok I think that covers the basics of copy and move semantics, lets quickly touch on blt::iterators
+	// Well I guess we should cover iterators period.
+	// So in Java we have iterators. We used them in Advanced OOP class with the stream,map,filter,etc. Same concept here
+	// the C++ standard library has a lot of functions which do similar things / operate on iterators.
+	// It would be useful to learn about some of them, look on the Cppreference.
+	// I don't care for them, personally, especially as a lot of the good ones are locked to standards I can't use (C++20)
+	// And to be honest, the Rust way of handling iterators is much more appealing.
 
+	std::vector some_data{412.f, 4123.f, 3214.f, 5231.f, 1235.4f};
+	std::vector<std::string> other_data{"hello", "there", "silly", "billy", "uwu"};
+	blt::hashmap_t<std::string, float> some_map;
+	some_map.emplace("world", 123.f);
+	some_map.emplace(":3", 456.f);
+	some_map.emplace("bully!", 789.f);
+	some_map.emplace("Hooray a todd episode!", 5922.f);
+	some_map.emplace("a gun", 321.f);
+
+	// I would read up on C++ iterators,
+	// here's the basics
+
+	// the begin iterator is where the container starts. All containers which are iterable have a .begin and .end function
+	// well actually I think, it has to be accessible by std::begin and std::end but that's a little too complicated for this
+	// (if you have a public .begin / .end, these functions are automatically defined)
+	const auto begin = some_data.begin();
+	// the end iterator is one past the end of the data
+	// if you think about iterators as generalizations of pointers, this makes sense.
+	// for (int i = 0; i < size(); i++)
+	// for (auto* ptr = data(); ptr != (data() + size()); ptr++)
+	// for (auto begin = begin(); begin != end(); ++begin)
+	const auto end = some_data.end();
+
+	// it's very rare you actually need something like this, but I figure it's good to touch on.
+	for (auto it = begin; it != end; ++it)
+		blt::black_box(*it);
+
+	// you can directly range-for loop iterate on objects with .begin/.end defined.
+	for (auto object : some_data)
+		blt::black_box(object);
+
+	// if the object is larger than 16 bytes (fits in 1-2 registers) please use a reference, or (if possible a const reference)
+	// or if the object has copy semantics, you use a reference to avoid making unnecessary copies.
+	for (const auto& other : other_data)
+		blt::black_box(other);
+
+	// blt offers many options for iteration
+	// all iterator containers can run any other functions (zip can enumerate, etc)
+
+	// you can directly supply iterators
+	for (const auto& v : blt::iterate(begin, end))
+		blt::black_box(v);
+
+	// as said you can use any number of functions on any iterate method
+	for (const auto& [i,v] : blt::iterate(begin, end).enumerate())
+		blt::black_box(v);
+
+	// the most useful of blt::iterators are of course the enumerate function, a shortcut for use in containers is blt::enumerate
+	for (const auto& [i,v] : blt::enumerate(some_data))
+		blt::black_box(v);
 
 	// show off reference stuff
 	refs();
 }
 
 void refs()
-{
-
-}
+{}

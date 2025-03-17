@@ -32,16 +32,6 @@ namespace td
 	private:
 	};
 
-	class event_t
-	{
-		event_handler_t handler;
-		std::string signature;
-	public:
-		void callHandler(void* target) { handler.call(target); }
-	private:
-
-	};
-
 	class event_handler_t
 	{
 		// I don't want to keep the parameter as a void pointer, maybe it would be nice to have a gameObject class or sumthing,
@@ -53,6 +43,16 @@ namespace td
 		event_handler_t(std::function<void(void*)> hndlr) : callback(std::move(hndlr)) {};
 		void call(void* target) { return callback(target); }
 	private:
+	};
+
+	class event_t
+	{
+		event_handler_t handler;
+		std::string signature;
+	public:
+		void callHandler(void* target) { handler.call(target); }
+	private:
+
 	};
 
 	class event_scheduler_t

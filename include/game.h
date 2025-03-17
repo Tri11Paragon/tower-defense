@@ -19,10 +19,16 @@
 #ifndef GAME_H
 #define GAME_H
 
+#include <enemies.h>
+#include <vector>
+
 namespace td
 {
 	class game_t
-	{};
+	{
+	public:
+	private:
+	};
 }
 
 #endif //GAME_H

@@ -20,10 +20,21 @@
 #define ENEMIES_H
 
 #include <fwddecl.h>
+#include <string>
 
 namespace td
 {
+	enum class enemy_id_t
+	{
 
+	};
+
+	class enemy_t
+	{
+	public:
+	private:
+		std::string texture_name;
+	};
 }
 
 #endif //ENEMIES_H

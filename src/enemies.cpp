@@ -16,3 +16,18 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include <enemies.h>
+
+td::enemy_t::enemy_t(std::string texture_name, std::vector<enemy_id_t> children, const damage_type_t damage_resistence, const blt::i32 health,
+					const blt::i32 damage, const float speed): m_texture_name(std::move(texture_name)), m_children(std::move(children)),
+																m_damage_resistence(damage_resistence), m_health(health), m_damage(damage),
+																m_speed(speed)
+{}
+
+td::enemy_t::enemy_t(std::string texture_name, std::vector<enemy_id_t> children): m_texture_name(std::move(texture_name)),
+																				m_children(std::move(children))
+{}
+
+void td::enemy_database_t::register_entities()
+{
+	add_enemy(enemy_id_t::TEST, enemy_t{"test", {}});
+}

@@ -21,6 +21,8 @@
 
 #include <enemies.h>
 #include <vector>
+#include <functional>
+#include <string>
 
 namespace td
 {
@@ -28,6 +30,37 @@ namespace td
 	{
 	public:
 	private:
+	};
+
+	class event_t
+	{
+		event_handler_t handler;
+		std::string signature;
+	public:
+		void callHandler(void* target) { handler.call(target); }
+	private:
+
+	};
+
+	class event_handler_t
+	{
+		// I don't want to keep the parameter as a void pointer, maybe it would be nice to have a gameObject class or sumthing,
+		// or diverge into unique event_handlers types, idk
+		std::function<void(void*)> callback;
+
+		// I'm preparing for when a handler would contain more than just a regular std::function, so this class would contain that stuff
+	public:
+		event_handler_t(std::function<void(void*)> hndlr) : callback(std::move(hndlr)) {};
+		void call(void* target) { return callback(target); }
+	private:
+	};
+
+	class event_scheduler_t
+	{
+	public:
+		void add_event_listener(event_t ev, event_handler_t handler);
+	private:
+		void* target;
 	};
 }
 

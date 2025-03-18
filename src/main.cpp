@@ -3,11 +3,17 @@
 #include "blt/gfx/renderer/batch_2d_renderer.h"
 #include "blt/gfx/renderer/camera.h"
 #include "blt/gfx/renderer/resource_manager.h"
+#include <map.h>
 
 blt::gfx::matrix_state_manager global_matrices;
 blt::gfx::resource_manager resources;
 blt::gfx::batch_renderer_2d renderer_2d(resources, global_matrices);
 blt::gfx::first_person_camera camera;
+
+float t = 0;
+float dir = 1;
+
+td::curve_t curve{blt::vec2{250, 250}, blt::vec2{500, 500}, blt::vec2{750, 250}};
 
 void init(const blt::gfx::window_data&)
 {
@@ -31,6 +37,20 @@ void update(const blt::gfx::window_data& data)
     camera.update();
     camera.update_view(global_matrices);
     global_matrices.update();
+
+    t += 0.01f * dir;
+    if (t >= 1)
+    {
+        t = 1;
+        dir = -1;
+    } else if (t <= 0)
+    {
+        t = 0;
+        dir = 1;
+    }
+
+    auto pos = curve.get_point(t);
+    renderer_2d.drawRectangleInternal(blt::make_color(1, 0, 0), blt::gfx::rectangle2d_t{pos, blt::vec2{25, 25}});
 
     renderer_2d.render(data.width, data.height);
 }

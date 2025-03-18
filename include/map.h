@@ -29,9 +29,11 @@ namespace td
 	class curve_t
 	{
 	public:
-		blt::vec2 get_point(float t) const;
+		curve_t(blt::vec2 p0, blt::vec2 p1, blt::vec2 p2);
+
+		[[nodiscard]] blt::vec2 get_point(float t) const;
 	private:
-		blt::vec2 p0, p1, p2;
+		blt::vec2 m_p0, m_p1, m_p2;
 	};
 
 	class path_segment_t

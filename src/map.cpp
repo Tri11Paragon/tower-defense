@@ -19,11 +19,14 @@
 
 namespace td
 {
+	curve_t::curve_t(const blt::vec2 p0, const blt::vec2 p1, const blt::vec2 p2): m_p0(p0), m_p1(p1), m_p2(p2)
+	{}
+
 	blt::vec2 curve_t::get_point(const float t) const
 	{
 		const auto t_inv = 1.0f - t;
 		const auto t_inv_sq = t_inv * t_inv;
 		const auto t_sq = t * t;
-		return t_inv_sq * p0 + 2.0f * t_inv * t * p1 + t_sq * p2;
+		return t_inv_sq * m_p0 + 2.0f * t_inv * t * m_p1 + t_sq * m_p2;
 	}
 }

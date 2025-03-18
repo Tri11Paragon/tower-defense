@@ -13,7 +13,7 @@ blt::gfx::first_person_camera camera;
 float t = 0;
 float dir = 1;
 
-td::curve_t curve{blt::vec2{250, 250}, blt::vec2{500, 500}, blt::vec2{750, 250}};
+td::curve_t curve{blt::vec2{250, 250}, blt::vec2{400, 500}, blt::vec2{600, 500}, blt::vec2{750, 250}};
 
 void init(const blt::gfx::window_data&)
 {
@@ -51,6 +51,9 @@ void update(const blt::gfx::window_data& data)
 
     auto pos = curve.get_point(t);
     renderer_2d.drawRectangleInternal(blt::make_color(1, 0, 0), blt::gfx::rectangle2d_t{pos, blt::vec2{25, 25}});
+    auto lines = curve.to_lines(32);
+    for (const auto& line : lines)
+        renderer_2d.drawLineInternal(blt::make_color(0, 1,0), line);
 
     renderer_2d.render(data.width, data.height);
 }

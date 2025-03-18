@@ -20,20 +20,48 @@
 #define MAP_H
 
 #include <blt/math/vectors.h>
+#include <blt/gfx/renderer/batch_2d_renderer.h>
 #include <fwddecl.h>
 #include <enemies.h>
 
 namespace td
 {
 
+	struct curve_mesh_data_t
+	{
+		struct line_vertex_t
+		{
+			blt::vec3 pos;
+			blt::vec2 uv;
+		};
+
+		[[nodiscard]] std::unique_ptr<blt::gfx::vertex_array_t> to_vertex_array() const;
+		void populate_vertex_array(blt::gfx::vertex_array_t& va) const;
+
+		[[nodiscard]] std::vector<line_vertex_t> calculate_vertices() const;
+
+		curve_mesh_data_t& with(const curve_mesh_data_t& mesh)
+		{
+			lines.insert(lines.end(), mesh.lines.begin(), mesh.lines.end());
+			return *this;
+		}
+
+		std::vector<blt::gfx::line2d_t> lines;
+	};
+
 	class curve_t
 	{
 	public:
 		curve_t(blt::vec2 p0, blt::vec2 p1, blt::vec2 p2);
+		curve_t(blt::vec2 p0, blt::vec2 p1, blt::vec2 p2, blt::vec2 p3);
 
 		[[nodiscard]] blt::vec2 get_point(float t) const;
+
+		[[nodiscard]] std::vector<blt::gfx::line2d_t> to_lines(blt::i32 segments) const;
+
+		[[nodiscard]] curve_mesh_data_t to_mesh(blt::i32 segments) const;
 	private:
-		blt::vec2 m_p0, m_p1, m_p2;
+		blt::vec2 m_p0, m_p1, m_p2, m_p3;
 	};
 
 	class path_segment_t

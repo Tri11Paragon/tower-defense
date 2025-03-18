@@ -29,7 +29,13 @@ namespace td
 	class game_t
 	{
 	public:
+
+		void render();
+
+		void update();
+
 	private:
+		std::vector<enemy_instance_t> enemies;
 	};
 
 	class event_handler_t
@@ -40,27 +46,37 @@ namespace td
 
 		// I'm preparing for when a handler would contain more than just a regular std::function, so this class would contain that stuff
 	public:
-		event_handler_t(std::function<void(void*)> hndlr) : callback(std::move(hndlr)) {};
-		void call(void* target) { return callback(target); }
+		explicit event_handler_t(std::function<void(void*)> handler) : callback(std::move(handler))
+		{};
+
+		void call(void* target) const
+		{
+			return callback(target);
+		}
+
 	private:
 	};
 
 	class event_t
 	{
+	public:
+		void callHandler(void* target)
+		{
+			handler.call(target);
+		}
+
+	private:
 		event_handler_t handler;
 		std::string signature;
-	public:
-		void callHandler(void* target) { handler.call(target); }
-	private:
-
 	};
 
 	class event_scheduler_t
 	{
 	public:
 		void add_event_listener(event_t ev, event_handler_t handler);
+
 	private:
-		void* target;
+		void* target = nullptr;
 	};
 }
 

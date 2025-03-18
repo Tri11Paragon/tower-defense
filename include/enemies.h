@@ -128,7 +128,7 @@ namespace td
 		{
 			const auto index = static_cast<blt::i32>(enemy_id);
 			if (enemies_registry.size() <= index)
-				enemies_registry.resize(index + 1);
+				enemies_registry.resize(index + 1, enemy_t{"no_enemy_texture", {}});
 			enemies_registry[index] = enemy;
 		}
 

@@ -4,8 +4,6 @@
 #include "blt/gfx/renderer/camera.h"
 #include "blt/gfx/renderer/resource_manager.h"
 
-void michael_examples();
-
 blt::gfx::matrix_state_manager global_matrices;
 blt::gfx::resource_manager resources;
 blt::gfx::batch_renderer_2d renderer_2d(resources, global_matrices);
@@ -15,7 +13,11 @@ void init(const blt::gfx::window_data&)
 {
     using namespace blt::gfx;
 
-    BLT_INFO("This should be colored lol");
+    resources.setPrefixDirectory("../");
+    BLT_INFO("Loading Resources");
+    resources.enqueue("res/enemy.png", "no_enemy_texture");
+    resources.enqueue("res/particle.png", "particle");
+    resources.enqueue("res/tower.png", "tower");
 
     global_matrices.create_internals();
     resources.load_resources();
@@ -43,7 +45,5 @@ void destroy(const blt::gfx::window_data&)
 
 int main()
 {
-    michael_examples();
-
     blt::gfx::init(blt::gfx::window_data{"My Sexy Window", init, update, destroy}.setSyncInterval(1));
 }

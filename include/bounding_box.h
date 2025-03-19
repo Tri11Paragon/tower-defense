@@ -16,33 +16,13 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef MAP_H
-#define MAP_H
-
-#include <blt/math/vectors.h>
-#include <blt/gfx/renderer/batch_2d_renderer.h>
-#include <fwddecl.h>
-#include <enemies.h>
+#ifndef BOUNDING_BOX_H
+#define BOUNDING_BOX_H
 
 namespace td
 {
-	class path_segment_t
-	{
-	public:
-		explicit path_segment_t(const blt::gfx::curve2d_t& curve): m_curve{curve}
-		{}
-
-	private:
-		blt::gfx::curve2d_t m_curve;
-		std::vector<enemy_instance_t> m_enemies;
-	};
-
-	class map_t
-	{
-	public:
-
-	private:
-	};
+	class bounding_box_t
+	{};
 }
 
-#endif //MAP_H
+#endif //BOUNDING_BOX_H

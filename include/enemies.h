@@ -23,6 +23,7 @@
 #include <string>
 #include <vector>
 #include <blt/std/types.h>
+#include <bounding_box.h>
 
 namespace td
 {

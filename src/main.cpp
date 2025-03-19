@@ -13,7 +13,7 @@ blt::gfx::first_person_camera camera;
 float t = 0;
 float dir = 1;
 
-blt::gfx::curve2d_t curve{blt::vec2{250, 250}, blt::vec2{400, 500}, blt::vec2{600, 500}, blt::vec2{750, 250}};
+blt::gfx::curve2d_t curve{blt::vec2{250, 250}, blt::vec2{350, 500}, blt::vec2{650, 500}, blt::vec2{750, 250}};
 blt::gfx::curve2d_mesh_data_t mesh;
 
 void init(const blt::gfx::window_data&)

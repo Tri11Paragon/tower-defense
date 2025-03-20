@@ -52,6 +52,8 @@ namespace td
 			const auto length = segment.m_curve_length;
 			for (const auto [j, enemy] : blt::enumerate(segment.m_enemies))
 			{
+				if (!enemy.is_alive)
+					continue;
 				const auto& enemy_info = m_database->get(enemy.id);
 				const auto movement = (enemy_info.get_speed() / length) * PATH_SPEED_MULTIPLIER;
 				enemy.percent_along_path += movement;
@@ -61,13 +63,34 @@ namespace td
 					segment.m_empty_indices.emplace_back(j);
 					if (i != m_path_segments.size() - 1)
 					{
-						
-					}
+						auto& next_segment = m_path_segments[i + 1];
+						enemy_instance_t moved_enemy{enemy.id, enemy.health_left};
+						next_segment.add_enemy(moved_enemy);
+					} else
+						damage += enemy_info.get_damage();
 				}
 			}
 		}
 
 		return damage;
+	}
+
+	void map_t::draw(blt::gfx::batch_renderer_2d& renderer)
+	{
+		// TODO: this is currently for debug
+		const auto mesh_data = get_mesh_data(10);
+		renderer.drawCurve(mesh_data, blt::make_color(0, 1, 0));
+		for (const auto& segment : m_path_segments)
+		{
+			for (const auto& enemy : segment.m_enemies)
+			{
+				if (!enemy.is_alive)
+					continue;
+				const auto point = segment.m_curve.get_point(enemy.percent_along_path);
+				constexpr blt::vec2f size{10, 10};
+				renderer.drawRectangle(blt::gfx::rectangle2d_t{point, size}, blt::make_color(1, 0, 0), 1);
+			}
+		}
 	}
 
 	blt::gfx::curve2d_mesh_data_t map_t::get_mesh_data(const float thickness) const

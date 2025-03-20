@@ -107,13 +107,13 @@ namespace td
 			return *this;
 		}
 
-		enemy_t& set_m_damage(const float m_damage)
+		enemy_t& set_damage(const float m_damage)
 		{
 			this->m_damage = m_damage;
 			return *this;
 		}
 
-		enemy_t& set_m_speed(const float m_speed)
+		enemy_t& set_speed(const float m_speed)
 		{
 			this->m_speed = m_speed;
 			return *this;
@@ -131,6 +131,11 @@ namespace td
 	class enemy_database_t
 	{
 	public:
+		enemy_database_t()
+		{
+			register_entities();
+		}
+
 		void add_enemy(enemy_id_t enemy_id, const enemy_t& enemy)
 		{
 			const auto index = static_cast<blt::i32>(enemy_id);

@@ -16,8 +16,19 @@ float dir = 1;
 blt::gfx::curve2d_t curve{blt::vec2{250, 250}, blt::vec2{350, 500}, blt::vec2{650, 500}, blt::vec2{750, 250}};
 blt::gfx::curve2d_mesh_data_t mesh;
 
+using curve_t = blt::gfx::curve2d_t;
+using vec2 = blt::vec2f;
+curve_t c1{{0, 100}, {200, 100}};
+curve_t c2{{200, 100}, {300, 100}, {300, 300}};
+curve_t c3{{300, 300}, {300, 400}, {400, 400}};
+curve_t c4{{400, 400}, {500, 400}, {500, 500}};
+
+td::enemy_database_t database;
+td::map_t map{std::vector{td::path_segment_t{c1}, td::path_segment_t{c2}, td::path_segment_t{c3}, td::path_segment_t{c4}}, database};
+
 void init(const blt::gfx::window_data&)
 {
+	blt::gfx::setWindowSize(1440, 720);
 	using namespace blt::gfx;
 
 	resources.setPrefixDirectory("../");
@@ -40,11 +51,15 @@ void update(const blt::gfx::window_data& data)
 	camera.update_view(global_matrices);
 	global_matrices.update();
 
+	map.update();
+	map.draw(renderer_2d);
+
 	t += 0.01f * dir;
 	if (t >= 1)
 	{
 		t = 1;
 		dir = -1;
+		map.spawn(td::enemy_id_t::TEST);
 	} else if (t <= 0)
 	{
 		t = 0;
@@ -71,5 +86,5 @@ void destroy(const blt::gfx::window_data&)
 
 int main()
 {
-	blt::gfx::init(blt::gfx::window_data{"My Sexy Window", init, update, destroy}.setSyncInterval(1).setWidth(1440).setHeight(720));
+	blt::gfx::init(blt::gfx::window_data{"My Sexy Window", init, update, destroy}.setSyncInterval(1));
 }

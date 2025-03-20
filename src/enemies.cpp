@@ -29,5 +29,5 @@ td::enemy_t::enemy_t(std::string texture_name, std::vector<enemy_id_t> children)
 
 void td::enemy_database_t::register_entities()
 {
-	add_enemy(enemy_id_t::TEST, enemy_t{"test", {}});
+	add_enemy(enemy_id_t::TEST, enemy_t{"test", {}}.set_speed(10));
 }

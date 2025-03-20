@@ -74,7 +74,12 @@ namespace td
 																									m_database{&database}
 		{}
 
-		void draw();
+		void spawn(const enemy_id_t id)
+		{
+			m_path_segments.front().add_enemy(enemy_instance_t{id, m_database->get(id).get_health()});
+		}
+
+		void draw(blt::gfx::batch_renderer_2d& renderer);
 
 		float update();
 

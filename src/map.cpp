@@ -15,12 +15,13 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+#include <config.h>
 #include <map.h>
 
 namespace td
 {
-	path_segment_t::path_segment_t(const blt::gfx::curve2d_t& curve): m_bounding_box{get_bounding_box(curve, 32)}, m_curve{curve},
-																	m_curve_length{curve.length(32)}
+	path_segment_t::path_segment_t(const blt::gfx::curve2d_t& curve): m_bounding_box{get_bounding_box(curve, PATH_UPDATE_SEGMENTS)}, m_curve{curve},
+																	m_curve_length{curve.length(PATH_UPDATE_SEGMENTS)}
 	{}
 
 	bounding_box_t path_segment_t::get_bounding_box(const blt::gfx::curve2d_t& curve, const blt::i32 segments)
@@ -42,16 +43,38 @@ namespace td
 		return bounding_box_t{min, max};
 	}
 
-	void map_t::update()
+	float map_t::update()
 	{
+		float damage = 0;
+		for (blt::size_t i = 0; i < m_path_segments.size(); ++i)
+		{
+			auto& segment = m_path_segments[i];
+			const auto length = segment.m_curve_length;
+			for (const auto [j, enemy] : blt::enumerate(segment.m_enemies))
+			{
+				const auto& enemy_info = m_database->get(enemy.id);
+				const auto movement = (enemy_info.get_speed() / length) * PATH_SPEED_MULTIPLIER;
+				enemy.percent_along_path += movement;
+				if (enemy.percent_along_path >= 1)
+				{
+					enemy.is_alive = false;
+					segment.m_empty_indices.emplace_back(j);
+					if (i != m_path_segments.size() - 1)
+					{
+						
+					}
+				}
+			}
+		}
 
+		return damage;
 	}
 
 	blt::gfx::curve2d_mesh_data_t map_t::get_mesh_data(const float thickness) const
 	{
 		blt::gfx::curve2d_mesh_data_t mesh_data;
 		for (const auto& segment : m_path_segments)
-			mesh_data.with(segment.m_curve.to_mesh(32, thickness));
+			mesh_data.with(segment.m_curve.to_mesh(PATH_DRAW_SEGMENTS, thickness));
 		return mesh_data;
 	}
 }

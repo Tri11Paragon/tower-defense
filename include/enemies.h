@@ -36,9 +36,13 @@ namespace td
 
 	struct enemy_instance_t
 	{
+		enemy_instance_t(const enemy_id_t id, const float health_left) : id{id}, health_left{health_left}
+		{}
+
 		enemy_id_t id;
 		float health_left;
-		float percent_along_path;
+		float percent_along_path = 0;
+		bool is_alive = true;
 	};
 
 	class enemy_t
@@ -133,6 +137,11 @@ namespace td
 			if (static_cast<blt::i32>(enemies_registry.size()) <= index)
 				enemies_registry.resize(index + 1, enemy_t{"no_enemy_texture", {}});
 			enemies_registry[index] = enemy;
+		}
+
+		[[nodiscard]] const enemy_t& get(enemy_id_t id) const
+		{
+			return enemies_registry[static_cast<blt::i32>(id)];
 		}
 
 	private:

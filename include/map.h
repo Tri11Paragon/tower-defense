@@ -30,12 +30,31 @@ namespace td
 	class path_segment_t
 	{
 		friend map_t;
+
 	public:
 		explicit path_segment_t(const blt::gfx::curve2d_t& curve);
 
 		[[nodiscard]] const bounding_box_t& get_bounding_box() const
 		{
 			return m_bounding_box;
+		}
+
+		void remove_enemy(const blt::size_t index)
+		{
+			m_enemies[index].is_alive = false;
+			m_empty_indices.emplace_back(index);
+		}
+
+		void add_enemy(const enemy_instance_t& enemy)
+		{
+			if (!m_empty_indices.empty())
+			{
+				m_enemies[m_empty_indices.back()] = enemy;
+				m_empty_indices.pop_back();
+			} else
+			{
+				m_enemies.push_back(enemy);
+			}
 		}
 
 	private:
@@ -45,20 +64,25 @@ namespace td
 		blt::gfx::curve2d_t m_curve;
 		float m_curve_length;
 		std::vector<enemy_instance_t> m_enemies;
+		std::vector<blt::size_t> m_empty_indices;
 	};
 
 	class map_t
 	{
 	public:
-		explicit map_t(const std::vector<path_segment_t>& path_segments): m_path_segments{path_segments}
+		explicit map_t(const std::vector<path_segment_t>& path_segments, enemy_database_t& database): m_path_segments{path_segments},
+																									m_database{&database}
 		{}
 
-		void update();
+		void draw();
+
+		float update();
 
 		[[nodiscard]] blt::gfx::curve2d_mesh_data_t get_mesh_data(float thickness = 1) const;
 
 	private:
 		std::vector<path_segment_t> m_path_segments;
+		enemy_database_t* m_database;
 	};
 }
 

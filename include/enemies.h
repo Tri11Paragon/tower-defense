@@ -37,17 +37,19 @@ namespace td
 	struct enemy_instance_t
 	{
 		enemy_id_t id;
+		float health_left;
+		float percent_along_path;
 	};
 
 	class enemy_t
 	{
 	public:
-		enemy_t(std::string texture_name, std::vector<enemy_id_t> children, damage_type_t damage_resistence, blt::i32 health = 1, blt::i32 damage = 1,
+		enemy_t(std::string texture_name, std::vector<enemy_id_t> children, damage_type_t damage_resistence, float health = 1, float damage = 1,
 				float speed = 1.0f);
 
 		enemy_t(std::string texture_name, std::vector<enemy_id_t> children);
 
-		[[nodiscard]] blt::i32 get_health() const
+		[[nodiscard]] float get_health() const
 		{
 			return m_health;
 		}
@@ -67,7 +69,7 @@ namespace td
 			return m_texture_name;
 		}
 
-		[[nodiscard]] blt::i32 get_damage() const
+		[[nodiscard]] float get_damage() const
 		{
 			return m_damage;
 		}
@@ -77,7 +79,7 @@ namespace td
 			return m_speed;
 		}
 
-		enemy_t& set_health(const blt::i32 value)
+		enemy_t& set_health(const float value)
 		{
 			m_health = value;
 			return *this;
@@ -101,7 +103,7 @@ namespace td
 			return *this;
 		}
 
-		enemy_t& set_m_damage(const blt::i32 m_damage)
+		enemy_t& set_m_damage(const float m_damage)
 		{
 			this->m_damage = m_damage;
 			return *this;
@@ -117,8 +119,8 @@ namespace td
 		std::string m_texture_name;
 		std::vector<enemy_id_t> m_children;
 		damage_type_t m_damage_resistence = damage_type_t::BASE;
-		blt::i32 m_health = 1;
-		blt::i32 m_damage = 1;
+		float m_health = 1;
+		float m_damage = 1;
 		float m_speed = 1.0f;
 	};
 

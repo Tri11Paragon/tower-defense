@@ -45,6 +45,9 @@ namespace td
 	{
 		return (val & static_cast<blt::u8>(type)) != 0;
 	}
+
+	class map_t;
+	class path_segment_t;
 }
 
 #endif //FWDDECL_H

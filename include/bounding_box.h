@@ -19,10 +19,40 @@
 #ifndef BOUNDING_BOX_H
 #define BOUNDING_BOX_H
 
+#include <blt/math/vectors.h>
+
 namespace td
 {
 	class bounding_box_t
-	{};
+	{
+	public:
+		bounding_box_t(const float xMin, const float yMin, const float xMax, const float yMax): m_min{xMin, yMin}, m_max{xMax, yMax}
+		{}
+
+		bounding_box_t(const blt::vec2& min, const blt::vec2& max): m_min{min}, m_max{max}
+		{}
+
+		[[nodiscard]] bool contains(const blt::vec2& point) const;
+
+		[[nodiscard]] blt::vec2 get_center() const;
+
+		[[nodiscard]] blt::vec2 get_size() const;
+
+		[[nodiscard]] bool intersects(const bounding_box_t& other) const;
+
+		[[nodiscard]] blt::vec2 get_min() const
+		{
+			return m_min;
+		}
+
+		[[nodiscard]] blt::vec2 get_max() const
+		{
+			return m_max;
+		}
+
+	private:
+		blt::vec2 m_min, m_max;
+	};
 }
 
 #endif //BOUNDING_BOX_H

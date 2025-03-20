@@ -35,7 +35,6 @@ namespace td
 		void update();
 
 	private:
-		std::vector<enemy_instance_t> enemies;
 	};
 
 	class event_handler_t

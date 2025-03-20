@@ -15,19 +15,28 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include <enemies.h>
+#include <bounding_box.h>
 
-td::enemy_t::enemy_t(std::string texture_name, std::vector<enemy_id_t> children, const damage_type_t damage_resistence, const float health,
-					const float damage, const float speed): m_texture_name(std::move(texture_name)), m_children(std::move(children)),
-																m_damage_resistence(damage_resistence), m_health(health), m_damage(damage),
-																m_speed(speed)
-{}
-
-td::enemy_t::enemy_t(std::string texture_name, std::vector<enemy_id_t> children): m_texture_name(std::move(texture_name)),
-																				m_children(std::move(children))
-{}
-
-void td::enemy_database_t::register_entities()
+namespace td
 {
-	add_enemy(enemy_id_t::TEST, enemy_t{"test", {}});
+	bool bounding_box_t::contains(const blt::vec2& point) const
+	{
+		return point >= m_min && point <= m_max;
+	}
+
+	blt::vec2 bounding_box_t::get_center() const
+	{
+		const auto center = get_size() / 2.0f;
+		return m_min + center;
+	}
+
+	blt::vec2 bounding_box_t::get_size() const
+	{
+		return m_max - m_min;
+	}
+
+	bool bounding_box_t::intersects(const bounding_box_t& other) const
+	{
+		return other.m_min <= m_max && other.m_max >= m_min;
+	}
 }

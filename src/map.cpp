@@ -17,6 +17,7 @@
  */
 #include <config.h>
 #include <map.h>
+#include <blt/gfx/window.h>
 
 namespace td
 {
@@ -55,8 +56,8 @@ namespace td
 				if (!enemy.is_alive)
 					continue;
 				const auto& enemy_info = m_database->get(enemy.id);
-				const auto movement = (enemy_info.get_speed() / length) * PATH_SPEED_MULTIPLIER;
-				enemy.percent_along_path += movement;
+				const auto movement = (enemy_info.get_speed() / length) * PATH_SPEED_MULTIPLIER * blt::gfx::getFrameDeltaSeconds();
+				enemy.percent_along_path += static_cast<float>(movement);
 				if (enemy.percent_along_path >= 1)
 				{
 					enemy.is_alive = false;

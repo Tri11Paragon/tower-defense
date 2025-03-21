@@ -27,7 +27,7 @@ namespace td {
 	// number of segments used when creating static data, such as the length of a curve
 	inline blt::i32 PATH_UPDATE_SEGMENTS = 64;
 
-	inline float PATH_SPEED_MULTIPLIER = 0.1f;
+	inline float PATH_SPEED_MULTIPLIER = 2.0f;
 }
 
 #endif //CONFIG_H

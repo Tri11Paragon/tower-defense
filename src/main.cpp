@@ -14,7 +14,9 @@ float t = 0;
 float dir = 1;
 
 blt::gfx::curve2d_t curve{blt::vec2{250, 250}, blt::vec2{350, 500}, blt::vec2{650, 500}, blt::vec2{750, 250}};
+blt::gfx::curve2d_t curve2{blt::vec2{250, 250}, blt::vec2{500, 500}, blt::vec2{750, 250}};
 blt::gfx::curve2d_mesh_data_t mesh;
+blt::gfx::curve2d_mesh_data_t mesh2;
 
 using curve_t = blt::gfx::curve2d_t;
 using vec2 = blt::vec2f;
@@ -41,6 +43,7 @@ void init(const blt::gfx::window_data&)
 	resources.load_resources();
 	renderer_2d.create();
 	mesh = curve.to_mesh(32);
+	mesh2 = curve2.to_mesh(32);
 }
 
 void update(const blt::gfx::window_data& data)
@@ -69,6 +72,7 @@ void update(const blt::gfx::window_data& data)
 	auto pos = curve.get_point(t);
 	renderer_2d.drawRectangle(blt::gfx::rectangle2d_t{pos, blt::vec2{25, 25}}, blt::make_color(1, 0, 0));
 	renderer_2d.drawCurve(mesh, blt::make_color(0, 1, 0));
+	renderer_2d.drawCurve(mesh2, blt::make_color(0, 0, 1));
 	// auto lines = curve.to_lines(32);
 	// for (const auto& line : lines)
 	// renderer_2d.drawLineInternal(blt::make_color(0, 1,0), line);

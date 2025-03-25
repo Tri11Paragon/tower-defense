@@ -5,6 +5,8 @@
 #include "blt/gfx/renderer/resource_manager.h"
 #include <map.h>
 
+#include <blt/math/aabb.h>
+
 blt::gfx::matrix_state_manager global_matrices;
 blt::gfx::resource_manager resources;
 blt::gfx::batch_renderer_2d renderer_2d(resources, global_matrices);

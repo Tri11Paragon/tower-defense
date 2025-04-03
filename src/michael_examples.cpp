@@ -367,6 +367,7 @@ void michael_examples()
 	// you can use the filter option to filter elements from the container.
 	// it is an ugly hack because of the way c++ iterators work
 	// so it forcefully returns an optional
+	/* (MICHAEL'S NOTE: Removed below line so it compiles)
 	for (const auto v : blt::enumerate(some_map).flatten().filter([](const auto& data) {
 		auto [i, k, v] = data;
 		if (i % 2 == 0)
@@ -380,7 +381,7 @@ void michael_examples()
 	{
 		if (v)
 			BLT_TRACE("{} {} {}", std::get<0>(*v), std::get<1>(*v), std::get<2>(*v));
-	}
+	} */
 
 	BLT_TRACE("");
 	BLT_TRACE("");

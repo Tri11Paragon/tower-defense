@@ -20,6 +20,8 @@
 #define BOUNDING_BOX_H
 
 #include <blt/math/vectors.h>
+#include <blt/std/types.h>
+#include <vector>
 
 namespace td
 {
@@ -52,6 +54,54 @@ namespace td
 
 	private:
 		blt::vec2 m_min, m_max;
+	};
+
+	class b_box_node_t
+	{
+	public:
+		b_box_node_t(const blt::u8 parentIndex, bounding_box_t* bBox, std::vector<blt::u8> childIndices): parentIndx(parentIndex), bounds(bBox), childIndcs(childIndices)
+		{}
+
+		b_box_node_t(const blt::u8 parentIndex, bounding_box_t* bBox, const blt::u8 depth): parentIndx(parentIndex), bounds(bBox), depth(depth)
+		{}
+
+		void add_child_index(blt::u8 index)
+		{
+			childIndcs.push_back(index);
+		}
+
+		[[nodiscard]] std::vector<blt::u8> get_children() const
+		{
+			return childIndcs;
+		}
+		[[nodiscard]] blt::u8 get_depth()
+		{
+			return depth;
+		}
+		[[nodiscard]] bounding_box_t* get_bounds()
+		{
+			return bounds;
+		}
+	private:
+		std::vector<blt::u8> childIndcs;
+		blt::u8 parentIndx;
+		blt::u8 depth;
+		bounding_box_t* bounds;
+	};
+
+	class b_box_hierarchy_t
+	{
+	public:
+		void add_node(bounding_box_t* bBox);
+		blt::u8 size() {
+			return nodeTree.size();
+		}
+		[[nodiscard]] b_box_node_t container_group(const blt::vec2& point) const;
+		[[nodiscard]] std::vector<bounding_box_t*> contains(const blt::vec2& point) const;
+		[[nodiscard]] std::vector<bounding_box_t*> intersections(const bounding_box_t& other) const;
+	private:
+		std::vector<b_box_node_t> nodeTree;
+		blt::u8 search_children(bounding_box_t& other, blt::u8 startIndx);
 	};
 }
 
